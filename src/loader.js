@@ -12,10 +12,20 @@ var REGEX_MULTIPLE_SPACES = /\s+/g
 var REGEX_UNSAFE_CHARS = /[{}\|\\\^~\[\]`"<>#%]/g
 
 module.exports = function(content) {
+
 	this.cacheable && this.cacheable();
 
 	var query = loaderUtils.getOptions(this) || {};
 	query.encoding = query.encoding || "none";
+
+
+	if (this.resourcePath.search(query.exclude || /^\b$/) > -1) {
+		// here’s a transparent pixel
+		return 'module.exports = ' + JSON.stringify(
+			"data:image/gif;base64,"
+			+ "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+		);
+	}
 
 	var limit = query.limit ? parseInt(query.limit, 10) : 0;
 
